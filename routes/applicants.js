@@ -10,7 +10,16 @@ router.get("/", auth, (req, res) => {
 	applicantModel
 		.findById(req.applicant.id)
 		.select("-password")
-		.then((user) => res.json(user));
+		.then((user) => res.json(user))
+		.catch((err) => console.error(err));
+});
+
+router.get("/users", (req, res) => {
+	applicantModel
+		.find()
+		.select("-password")
+		.then((users) => res.json(users))
+		.catch((err) => console.log(err));
 });
 
 router.post("/register", (req, res) => {
