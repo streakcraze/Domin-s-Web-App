@@ -5,6 +5,7 @@ export const ApplicantContext = createContext();
 
 export default function ApplicantContextProvider(props) {
 	const [quizResults, setQuizResults] = useState({});
+	const [loginError, setLoginError] = useState(false);
 
 	const questionPassed = (questionResult) => {
 		let obj = { ...quizResults, ...questionResult };
@@ -44,13 +45,16 @@ export default function ApplicantContextProvider(props) {
 				})
 				.catch((err) => {
 					console.log(err);
-					reject({ register: err.response.data.msg });
+					setLoginError(true);
+					reject();
 				});
 		});
 	};
 
 	return (
-		<ApplicantContext.Provider value={{ questionPassed, compileResults }}>
+		<ApplicantContext.Provider
+			value={{ questionPassed, compileResults, loginError }}
+		>
 			{props.children}
 		</ApplicantContext.Provider>
 	);

@@ -8,7 +8,7 @@ import ApplicantSignUp from "./Pages/ApplicantSignUp";
 import RecruiterSignUp from "./Pages/RecruiterSignUp";
 import RecruiterLandingPage from "./Pages/RecruiterLandingPage";
 import ApplicantLandingPage from "./Pages/ApplicantLandingPage";
-import jobsUpload from "./Pages/jobsUpload";
+import JobsUpload from "./Pages/JobsUpload";
 import ViewVacancies from "./Pages/ViewVacancies";
 import FileUpload from "./Pages/FileUpload";
 import Question1 from "./Pages/Question1";
@@ -16,9 +16,6 @@ import Question2 from "./Pages/Question2";
 import Question3 from "./Pages/Question3";
 import Question4 from "./Pages/Question4";
 import Question5 from "./Pages/Question5";
-//null   Anyone Can go inside
-//true   only logged in user can go inside
-//false  logged in user can't go inside
 
 function App() {
 	return (
@@ -39,7 +36,7 @@ function App() {
 					path="/applicantlandingpage"
 					component={ApplicantLandingPage}
 				/>
-				<Route exact path="/jobsupload" component={jobsUpload} />
+				<Route exact path="/jobsupload" component={JobsUpload} />
 				<Route exact path="/viewvacancies" component={ViewVacancies} />
 				<Route exact path="/fileupload" component={FileUpload} />
 				<Route exact path="/question1" component={Question1} />

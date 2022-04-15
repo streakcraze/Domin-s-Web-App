@@ -1,10 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Redirect } from "react-router-dom";
 import "./RecruiterSignUp.css";
 import img1 from "./img1.jpg";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 function ApplicantLandingPage() {
+	const [loginError, setLoginError] = useState(false);
+
 	useEffect(() => {
 		new Promise((resolve, reject) => {
 			const config = {
@@ -26,10 +29,21 @@ function ApplicantLandingPage() {
 				})
 				.catch((err) => {
 					console.log(err);
-					reject({ register: err.response.data.msg });
+					setLoginError(true);
+					reject();
 				});
 		});
 	}, []);
+
+	if (loginError) {
+		return (
+			<Redirect
+				to={{
+					pathname: "/applicantsignin",
+				}}
+			/>
+		);
+	}
 
 	return (
 		<>

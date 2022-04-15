@@ -7,7 +7,7 @@ function auth(req, res, next) {
 
 	try {
 		const decodedToken = jwt.verify(token, "domin");
-		req.applicant = decodedToken;
+		req.user = decodedToken;
 		next();
 	} catch (e) {
 		res.status(400).json({ msg: "Invalid token" });

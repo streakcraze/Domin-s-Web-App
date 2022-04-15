@@ -1,16 +1,47 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, Redirect } from "react-router-dom";
 import axios from "axios";
 import "./RecruiterSignUp.css";
 import img2 from "./img2.jpg";
+import pdfIcon from "../components/pdf.svg";
 
 export default function RecruiterLandingPage() {
-	const [applicantList, setApplicantList] = useState([]);
+	const [applications, setApplications] = useState([]);
+	const [recruiterName, setRecruiterName] = useState();
+	const [loginError, setLoginError] = useState(false);
 
-	const viewApplicants = applicantList.map((applicant) => {
+	useEffect(() => {
+		new Promise((resolve, reject) => {
+			const config = {
+				headers: {
+					"Content-type": "application/json",
+				},
+			};
+			const token = window.localStorage.getItem("ikazi-token");
+
+			if (token) {
+				config.headers["x-auth-token"] = token;
+			}
+
+			axios
+				.get("http://localhost:5000/api/recruiters", config)
+				.then((res) => {
+					console.log(res);
+					setRecruiterName(res.data.username);
+					resolve();
+				})
+				.catch((err) => {
+					console.log(err);
+					setLoginError(true);
+					reject();
+				});
+		});
+	}, []);
+
+	const viewApplications = applications.map((application) => {
 		return (
 			<div
-				key={`${applicant.username}`}
+				key={`${application._id}`}
 				style={{
 					backgroundColor: "green",
 					margin: "20px",
@@ -19,23 +50,72 @@ export default function RecruiterLandingPage() {
 					border: "2px",
 				}}
 			>
-				<p style={{ color: "white" }}>username: {applicant.username}</p>
-				<p style={{ color: "white" }}>email: {applicant.email}</p>
-				<p style={{ color: "white" }}>mobile: {applicant.mobile}</p>
-				<p style={{ color: "white" }}>test result: {applicant.testResult}</p>
+				<p style={{ color: "white" }}>job title: {application.jobTitle}</p>
+				<p style={{ color: "white" }}>
+					job description: {application.jobDescription}
+				</p>
+				<p style={{ color: "white" }}>
+					job location: {application.jobLocation}
+				</p>
+				<p style={{ color: "white" }}>
+					work experience: {application.workExperience}
+				</p>
+				<p style={{ color: "white" }}>applicants: </p>
+				{application.applicantsList.map((applicant) => {
+					return (
+						<ul
+							key={`${applicant._id}`}
+							style={{ padding: "3px", marginLeft: "5px", listStyle: "none" }}
+						>
+							<li>username: {applicant.username}</li>
+							<li>email: {applicant.email}</li>
+							<li>mobile: {applicant.mobile}</li>
+							<li>test result: {applicant.testResult}</li>
+							<li>
+								resume:{" "}
+								<a
+									href={applicant.resume}
+									download
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+									<img
+										src={pdfIcon}
+										style={{
+											position: "static",
+											height: "20px",
+											width: "20px",
+										}}
+										alt="pdf-icon"
+									/>
+								</a>
+							</li>
+						</ul>
+					);
+				})}
 			</div>
 		);
 	});
 
-	const retrieveApplicants = () => {
+	const retrieveApplications = () => {
 		axios
-			.get("http://localhost:5000/api/applicants/users")
+			.get(`http://localhost:5000/api/vacancies/${recruiterName}`)
 			.then((res) => {
 				console.log(res.data);
-				setApplicantList(res.data);
+				setApplications(res.data);
 			})
 			.catch((err) => console.log(err));
 	};
+
+	if (loginError) {
+		return (
+			<Redirect
+				to={{
+					pathname: "/recruitersignin",
+				}}
+			/>
+		);
+	}
 
 	return (
 		<div>
@@ -59,9 +139,9 @@ export default function RecruiterLandingPage() {
 				type="button"
 				value="submit"
 				id="btn1"
-				onClick={retrieveApplicants}
+				onClick={retrieveApplications}
 			>
-				View Applicants
+				View Applications
 			</button>
 			<div
 				style={{
@@ -69,7 +149,7 @@ export default function RecruiterLandingPage() {
 					flexWrap: "wrap",
 				}}
 			>
-				{applicantList.length > 0 && viewApplicants}
+				{applications.length > 0 && viewApplications}
 			</div>
 		</div>
 	);

@@ -1,27 +1,21 @@
-const mongoose = require('mongoose');
-
+const mongoose = require("mongoose");
 
 const recruiterSchema = mongoose.Schema({
-    recruiterName: {
-        type: String,
-        default: "",
-        required: true,
-      },
-      password: {
-        type: String,
-        default: "",
-        required: true,
-      },
-    email: {
-        type:String,
-        required: true ,
-        default:""
-    },
-   
-   
-})
+	username: {
+		type: String,
+		default: "",
+		required: true,
+	},
+	email: {
+		type: String,
+		required: true,
+		default: "",
+	},
+	password: {
+		type: String,
+		default: "",
+		required: true,
+	},
+});
 
-
-
-
-module.exports = mongoose.model('Recruiter', recruiterSchema);
+module.exports = mongoose.model("Recruiter", recruiterSchema);

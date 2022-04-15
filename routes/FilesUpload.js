@@ -35,17 +35,6 @@ const upload = multer({
 	},
 });
 
-/*
-router.get("/", (req, res, next) => {
-	applicantModel.find().then((data) => {
-		res.status(200).json({
-			message: "User list retrieved successfully!",
-			users: data,
-		});
-	});
-});
-*/
-
 router.post("/", auth, upload.single("resume"), (req, res) => {
 	const url = req.protocol + "://" + req.get("host");
 	applicantModel
@@ -55,6 +44,11 @@ router.post("/", auth, upload.single("resume"), (req, res) => {
 		)
 		.then((doc) => res.json(doc))
 		.catch((err) => console.error(err));
+});
+
+router.get("/:filename", (req, res) => {
+	const filePath = `./public/${req.params.filename}`;
+	res.download(filePath);
 });
 
 module.exports = router;

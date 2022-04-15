@@ -4,12 +4,9 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 //import routes
-const postItemsRoute = require("./routes/postItems.js");
-const getItemsRoute = require("./routes/getItems");
-const getSpecificItem = require("./routes/getSpecificItem");
-const recruiterSignUp = require("./routes/recruiterSignUp");
-const recruiterSignIn = require("./routes/recruiterSignIn");
+const recruiterRouter = require("./routes/recruiters");
 const applicantsRouter = require("./routes/applicants");
+const vacanciesRouter = require("./routes/vacancies");
 const resumeUpload = require("./routes/FilesUpload");
 
 const app = express();
@@ -31,13 +28,11 @@ mongoose
 	.catch((err) => console.error(err));
 
 //set apis
-app.use("/api/postitems", postItemsRoute);
-app.use("/api/getitems", getItemsRoute);
-app.use("/api/getspecific", getSpecificItem);
-app.use("/api/recruitersignup", recruiterSignUp);
-app.use("/api/recruitersignin", recruiterSignIn);
+app.use("/api/recruiters", recruiterRouter);
 app.use("/api/applicants", applicantsRouter);
+app.use("/api/vacancies", vacanciesRouter);
 app.use("/api/uploadfile", resumeUpload);
+app.use("/public", resumeUpload);
 
 //listen to port
 app.listen(5000, () => {

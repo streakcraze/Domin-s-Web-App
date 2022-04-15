@@ -12,7 +12,6 @@ export class ApplicantSignIn extends Component {
 		this.state = {
 			username: "",
 			password: "",
-			signInError: "",
 			success: false,
 		};
 
@@ -37,14 +36,12 @@ export class ApplicantSignIn extends Component {
 				this.setState({
 					username: "",
 					password: "",
-					signInError: "",
 					success: true,
 				});
 				window.localStorage.setItem("ikazi-token", res.data.applicant.token);
 				console.log(res);
 			})
 			.catch((err) => {
-				this.setState({ signInError: err });
 				console.log(err);
 			});
 	};
@@ -89,8 +86,6 @@ export class ApplicantSignIn extends Component {
 							onChange={this.changeInput}
 							placeholder="password..."
 						/>
-						<br />
-						{this.state.signInError ? this.state.signInError : ""}
 						<br />
 						<input
 							type="button"

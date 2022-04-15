@@ -8,6 +8,7 @@ class FileUpload extends Component {
 	state = {
 		selectedFile: null,
 		uploadSuccess: false,
+		loginError: false,
 	};
 
 	// On file select (from the pop up)
@@ -42,12 +43,23 @@ class FileUpload extends Component {
 				})
 				.catch((err) => {
 					console.log(err);
-					reject({ register: err.response.data.msg });
+					this.setState({ loginError: true });
+					reject();
 				});
 		});
 	};
 
 	render() {
+		if (this.state.loginError) {
+			return (
+				<Redirect
+					to={{
+						pathname: "/applicantsignin",
+					}}
+				/>
+			);
+		}
+
 		if (this.state.uploadSuccess) {
 			return (
 				<Redirect

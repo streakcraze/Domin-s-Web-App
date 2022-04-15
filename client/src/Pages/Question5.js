@@ -9,7 +9,8 @@ export default function Question5() {
 	const [answered, setAnswered] = useState(false);
 	const [error, setError] = useState("");
 
-	let { questionPassed, compileResults } = useContext(ApplicantContext);
+	let { questionPassed, compileResults, loginError } =
+		useContext(ApplicantContext);
 
 	const onValueChange = (event) => {
 		setSelectedOption(event.target.value);
@@ -27,6 +28,16 @@ export default function Question5() {
 
 		setAnswered(true);
 	};
+
+	if (loginError) {
+		return (
+			<Redirect
+				to={{
+					pathname: "/applicantsignin",
+				}}
+			/>
+		);
+	}
 
 	if (answered) {
 		compileResults();

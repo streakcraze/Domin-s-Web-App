@@ -14,7 +14,6 @@ export class ApplicantSignUp extends Component {
 			email: "",
 			password: "",
 			mobile: "",
-			signUpError: "",
 			success: false,
 		};
 
@@ -41,13 +40,11 @@ export class ApplicantSignUp extends Component {
 					password: "",
 					email: "",
 					mobile: "",
-					signUpError: "",
 					success: true,
 				});
 				console.log(res);
 			})
 			.catch((err) => {
-				this.setState({ signUpError: err });
 				console.log(err);
 			});
 	};
@@ -100,8 +97,6 @@ export class ApplicantSignUp extends Component {
 							onChange={this.changeInput}
 							placeholder="mobile..."
 						/>
-						<br />
-						{this.state.signUpError ? this.state.signUpError : ""}
 						<br />
 						<input
 							type="button"

@@ -4,10 +4,10 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const auth = require("../auth");
 
-const applicantModel = require("../models/Applicant");
+const recruiterModel = require("../models/Recruiter");
 
 router.get("/", auth, (req, res) => {
-	applicantModel
+	recruiterModel
 		.findById(req.user.id)
 		.select("-password")
 		.then((user) => res.json(user))
@@ -15,7 +15,7 @@ router.get("/", auth, (req, res) => {
 });
 
 router.get("/users", (req, res) => {
-	applicantModel
+	recruiterModel
 		.find()
 		.select("-password")
 		.then((users) => res.json(users))
@@ -25,18 +25,18 @@ router.get("/users", (req, res) => {
 router.post("/register", (req, res) => {
 	const { username, email, password, mobile } = req.body;
 
-	applicantModel
+	recruiterModel
 		.findOne({ $or: [{ username }, { email }] })
-		.then((applicant) => {
-			if (applicant) {
-				if (applicant.username === username) {
+		.then((recruiter) => {
+			if (recruiter) {
+				if (recruiter.username === username) {
 					return res.status(400).json({ msg: "username already exists!" });
 				} else {
 					return res.status(400).json({ msg: "email already exists!" });
 				}
 			}
 
-			const newApplicant = new applicantModel({
+			const newRecruiter = new recruiterModel({
 				username,
 				email,
 				password,
@@ -44,24 +44,24 @@ router.post("/register", (req, res) => {
 			});
 
 			bcrypt.genSalt(10, (err, salt) => {
-				bcrypt.hash(newApplicant.password, salt, (err, hash) => {
+				bcrypt.hash(newRecruiter.password, salt, (err, hash) => {
 					if (err) throw err;
-					newApplicant.password = hash;
-					newApplicant
+					newRecruiter.password = hash;
+					newRecruiter
 						.save()
-						.then((applicant) => {
+						.then((recruiter) => {
 							jwt.sign(
-								{ id: applicant._id },
+								{ id: recruiter._id },
 								"domin",
 								{ expiresIn: 3600 },
 								(err, token) => {
 									if (err) throw err;
 									res.json({
-										applicant: {
+										recruiter: {
 											token,
-											id: applicant._id,
-											username: applicant.username,
-											email: applicant.email,
+											id: recruiter._id,
+											username: recruiter.username,
+											email: recruiter.email,
 										},
 									});
 								}
@@ -79,27 +79,27 @@ router.post("/register", (req, res) => {
 router.post("/login", (req, res) => {
 	const { username, password } = req.body;
 
-	applicantModel
+	recruiterModel
 		.findOne({ username })
-		.then((applicant) => {
-			if (!applicant)
+		.then((recruiter) => {
+			if (!recruiter)
 				return res.status(400).json({ msg: "username does not exist" });
 
-			bcrypt.compare(password, applicant.password).then((isMatch) => {
+			bcrypt.compare(password, recruiter.password).then((isMatch) => {
 				if (!isMatch) return res.status(400).json({ msg: "wrong password" });
 
 				jwt.sign(
-					{ id: applicant._id },
+					{ id: recruiter._id },
 					"domin",
 					{ expiresIn: 3600 },
 					(err, token) => {
 						if (err) throw err;
 						res.json({
-							applicant: {
+							recruiter: {
 								token,
-								id: applicant._id,
-								username: applicant.username,
-								email: applicant.email,
+								id: recruiter._id,
+								username: recruiter.username,
+								email: recruiter.email,
 							},
 						});
 					}
@@ -110,14 +110,6 @@ router.post("/login", (req, res) => {
 			res.status(500).json({ msg: "internal server error" });
 			console.log(err);
 		});
-});
-
-router.post("/uploadTestResults", auth, (req, res) => {
-	const { testResult } = req.body;
-	applicantModel
-		.findOneAndUpdate({ _id: req.user.id }, { testResult })
-		.then((doc) => res.json(doc))
-		.catch((err) => console.error(err));
 });
 
 module.exports = router;
